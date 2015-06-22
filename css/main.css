@@ -1,0 +1,15 @@
+body {
+    text-align: center;
+    margin: 20px;
+}
+#mineField {
+    border: 1px solid black;
+}
+
+td {
+    padding: 5px;
+    width: 15px;
+    height: 15px;
+    text-align: center;
+    border: 1px solid black;
+}
