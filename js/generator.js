@@ -44,7 +44,7 @@ var FieldGenerator = (function(){
     var cell = field[row][col], l = field.length, i, j;
     for(i = row - 1; i <= row + 1; i++) {
       for(j = col - 1; j <= col + 1; j++) {
-        if(field[i] && field[i][j]) {
+        if(field[i] && field[i][j] && !field[i][j].isMine) {
           field[i][j].addMine();
         }
       }
