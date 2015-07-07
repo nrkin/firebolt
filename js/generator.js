@@ -15,42 +15,50 @@ var Cell = function(nMines, blown,isMine) {
 };
 
 var FieldGenerator = (function(){
-  var field;
+  var field = [];
 
   /*
   Randomly lay out 'n' number of mines in l X l grid
   * */
   function generate (l, n) {
     var i, j, row, col;
-    field = [];
+    this.field = [];
+    this.mines = n;
+    this.gridSize = l;
     //empty cells
     for(i = 0; i < l; i++) {
       row = [];
       for(j = 0; j < l; j++) {
         row.push(new Cell(0, false, false));
       }
-      field.push(row);
+      this.field.push(row);
     }
-    for(i = 0; i < n; i++) {
-      row = Math.ceil((Math.random() * 1000)) % l;
-      col = Math.ceil((Math.random() * 1000)) % l;
-      field[row][col].setIsMine(true);
-      updateVicinity(row, col);
-    }
-    return field;
+  }
+
+  function layoutMines() {
+    var i, j;
+    for(i = 0; i < this.mines; i++) {
+      row = Math.ceil((Math.random() * 1000)) % this.gridSize;
+      col = Math.ceil((Math.random() * 1000)) % this.gridSize;
+      this.field[row][col].setIsMine(true);
+      this.updateVicinity(row, col);
+    };
   }
 
   function updateVicinity(row, col) {
-    var cell = field[row][col], l = field.length, i, j;
+    var cell = this.field[row][col], l = this.field.length, i, j;
     for(i = row - 1; i <= row + 1; i++) {
       for(j = col - 1; j <= col + 1; j++) {
-        if(field[i] && field[i][j] && !field[i][j].isMine) {
-          field[i][j].addMine();
+        if(this.field[i] && this.field[i][j] && !this.field[i][j].isMine) {
+          this.field[i][j].addMine();
         }
       }
     }
   }
   return {
-    generate: generate
+    field: field,
+    generate: generate,
+    updateVicinity: updateVicinity,
+    layoutMines: layoutMines
   };
 })();
