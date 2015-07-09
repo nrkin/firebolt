@@ -26,10 +26,13 @@ var MineField = React.createClass({
   },
   _renderMine: function(mine) {
     if(mine.isMine) {
-      return <td>M</td>;
+      return <td><button onClick={this._handleMineClick.bind(this, mine)}>M</button></td>;
     }
-    return <td>{mine.nMines}</td>;
-  }
+    return <td><button onClick={this._handleMineClick.bind(this, mine)}>{mine.nMines}</button></td>;
+  },
+  _handleMineClick: function(mine, ev) {
+     console.log('Clicked mine ! ', mine);
+   }
 });
 
 React.render(
