@@ -23,7 +23,7 @@ var FieldGenerator = (function(){
   function generate (l, n) {
     var i, j, row, col;
     this.field = [];
-    this.mines = n;
+    this.nMines = n;
     this.gridSize = l;
     //empty cells
     for(i = 0; i < l; i++) {
@@ -37,9 +37,12 @@ var FieldGenerator = (function(){
 
   function layoutMines() {
     var i, j;
-    for(i = 0; i < this.mines; i++) {
-      row = Math.ceil((Math.random() * 1000)) % this.gridSize;
-      col = Math.ceil((Math.random() * 1000)) % this.gridSize;
+    for(i = 0; i < this.nMines; i++) {
+      do {
+        row = Math.ceil((Math.random() * 1000)) % this.gridSize;
+        col = Math.ceil((Math.random() * 1000)) % this.gridSize;
+      } while(this.field[row][col].isMine);
+
       this.field[row][col].setIsMine(true);
       this.updateVicinity(row, col);
     };
@@ -49,7 +52,7 @@ var FieldGenerator = (function(){
     var cell = this.field[row][col], l = this.field.length, i, j;
     for(i = row - 1; i <= row + 1; i++) {
       for(j = col - 1; j <= col + 1; j++) {
-        if(this.field[i] && this.field[i][j] && !this.field[i][j].isMine) {
+        if(!(i === row && j === col) && this.field[i] && this.field[i][j] && !this.field[i][j].isMine) {
           this.field[i][j].addMine();
         }
       }
