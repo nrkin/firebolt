@@ -33,6 +33,7 @@ var FieldGenerator = (function(){
       }
       this.field.push(row);
     }
+    this.layoutMines();
   }
 
   function layoutMines() {

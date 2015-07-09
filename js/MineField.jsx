@@ -10,7 +10,6 @@ var MineField = React.createClass({
     var self = this;
     return (
       <table id="mineField">
-        <thead><tr><button onClick={self._layoutMines}>Lay Mines</button></tr></thead>
         <tbody>
     {this.state.mineField.map(function(row, i) {
         return (
@@ -30,12 +29,6 @@ var MineField = React.createClass({
       return <td>M</td>;
     }
     return <td>{mine.nMines}</td>;
-  },
-  _layoutMines: function () {
-    FieldGenerator.layoutMines();
-    this.setState({
-      mineField: FieldGenerator.field
-    });
   }
 });
 
