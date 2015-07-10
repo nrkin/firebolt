@@ -6,8 +6,10 @@ body {
     border: 1px solid black;
 }
 
-button {
+tbody td {
     padding: 0;
+}
+tbody button {
     width: 25px;
     min-width: 25px;
     max-width: 25px;
@@ -15,4 +17,12 @@ button {
     min-height: 25px;
     max-height: 25px;
     text-align: center;
+}
+
+.blown {
+    background: lightsalmon;
+}
+
+.safe {
+    background: lightgreen;
 }
