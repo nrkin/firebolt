@@ -1,4 +1,4 @@
-var Cell = function(nMines, blown,isMine) {
+var Cell = function(nMines, blown, isMine) {
   this.nMines = nMines;
   this.blown = blown;
   this.isMine = isMine;

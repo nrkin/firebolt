@@ -47,11 +47,17 @@ var MineField = React.createClass({
   },
   _handleMineClick: function(mine, row, col, ev) {
      console.log('Clicked mine ! ', mine);
-     if(!ev.ctrlKey && mine.isMine) {
-       this.state.mineField.blowUp();
-     } else {
+     if(!ev.ctrlKey) {
+       if(mine.isMine){
+         this.state.mineField.blowUp();
+       } else {
+         mine.reveal();
+         this.state.mineField.revealVicinity(row, col);
+       }
+
+     } else if (mine.isMine) {
        mine.reveal();
-       this.state.mineField.revealVicinity(row, col);
+       this.setState({ mineField: this.state.mineField.revealVicinity(row, col) });
      }
      //TODO : This does not make sense :)
      this.setState(this.state.mineField);
