@@ -1,11 +1,7 @@
 var MineField = React.createClass({
-  getInitialState: function(){
-    return {
-      mineField: new FieldGenerator(10, 20)
-    };
-  },
+  mixins: [Reflux.connect(MineFieldStore, "field")],
   render: function() {
-    var p = this.props, i, j, mine, l = this.state.mineField.cells.length;
+    var p = this.props, i, j, mine, l = this.state.field.length;
     var self = this;
     return (
       <table id="mineField">
@@ -14,7 +10,7 @@ var MineField = React.createClass({
           <tr><button onClick={this._handleRevealClick}>Reveal</button></tr>
         </thead>
         <tbody>
-    {this.state.mineField.cells.map(function(row, i) {
+    {this.state.field.map(function(row, i) {
         return (
           <tr>
           {row.map(function(mine, j) {
@@ -43,34 +39,33 @@ var MineField = React.createClass({
         text = mine.nMines;
       }
     }
-    return <td><button className={className} disabled={disabled} onClick={this._handleMineClick.bind(this, mine, row, col)}>{text}</button></td>;
+    return (
+      <td>
+      <button
+       className={className}
+       disabled={disabled}
+       onClick={this._handleMineClick.bind(this, mine, row, col)}
+       onDoubleClick={this._handleMineDoubleClick.bind(this, mine, row, col)}>
+       {text}
+      </button>
+      </td>
+    );
   },
   _handleMineClick: function(mine, row, col, ev) {
-     console.log('Clicked mine ! ', mine);
-     if(!ev.ctrlKey) {
-       if(mine.isMine){
-         this.state.mineField.blowUp();
-       } else {
-         mine.reveal();
-         this.state.mineField.revealVicinity(row, col);
-       }
-
-     } else if (mine.isMine) {
-       mine.reveal();
-       this.setState({ mineField: this.state.mineField.revealVicinity(row, col) });
-     }
-     //TODO : This does not make sense :)
-     this.setState(this.state.mineField);
+     console.log('Clicked mine component ! ', mine);
+     MineFieldActions.clickMine(row, col);
    },
+   _handleMineDoubleClick: function(mine, row, col, ev) {
+      console.log('DoubleClicked mine component ! ', mine);
+      MineFieldActions.doubleClickMine(row, col);
+    },
    _handleResetClick: function(ev) {
-     this.state.mineField.reset();
-     //TODO : This does not make sense :)
-     this.setState(this.state.mineField);
+     console.log("Component minefield reset clicked !");
+     MineFieldActions.resetField();
    },
    _handleRevealClick: function(ev) {
-     this.state.mineField.reveal();
-     //TODO : This does not make sense :)
-     this.setState(this.state.mineField);
+     console.log("Component minefield reveal clicked !");
+     MineFieldActions.revealField();
    }
 });
 
