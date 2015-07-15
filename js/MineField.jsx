@@ -44,26 +44,25 @@ var MineField = React.createClass({
       <button
        className={className}
        disabled={disabled}
-       onClick={this._handleMineClick.bind(this, mine, row, col)}
-       onDoubleClick={this._handleMineDoubleClick.bind(this, mine, row, col)}>
+       onClick={this._handleMineClick.bind(this, row, col)}>
        {text}
       </button>
       </td>
     );
   },
-  _handleMineClick: function(mine, row, col, ev) {
-     console.log('Clicked mine component ! ', mine);
-     MineFieldActions.clickMine(row, col);
+  _handleMineClick: function(row, col, ev) {
+     console.log('Clicked mine component ! ');
+    if(ev.ctrlKey) {
+      MineFieldActions.defuseMine(row, col);
+    } else {
+      MineFieldActions.clickMine(row, col);
+    }
    },
-   _handleMineDoubleClick: function(mine, row, col, ev) {
-      console.log('DoubleClicked mine component ! ', mine);
-      MineFieldActions.doubleClickMine(row, col);
-    },
-   _handleResetClick: function(ev) {
+   _handleResetClick: function() {
      console.log("Component minefield reset clicked !");
      MineFieldActions.resetField();
    },
-   _handleRevealClick: function(ev) {
+   _handleRevealClick: function() {
      console.log("Component minefield reveal clicked !");
      MineFieldActions.revealField();
    }

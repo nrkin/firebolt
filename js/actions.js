@@ -1,6 +1,6 @@
 var MineFieldActions = Reflux.createActions([
     "clickMine",
-    "doubleClickMine",
+    "defuseMine",
     "revealField",
     "resetField"
 ]);
