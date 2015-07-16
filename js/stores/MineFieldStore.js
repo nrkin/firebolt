@@ -53,6 +53,47 @@ var MineFieldStore = (function () {
         return field;
     };
 
+    var checkRevealVicinity = function(field, row, col) {
+        var l = field.length, i, j, minesDetected = 0, minesToReveal = [];
+        for(i = row - 1; i <= row + 1; i++) {
+            for(j = col - 1; j <= col + 1; j++) {
+                if(!(i === row && j === col) && j >= 0 && i >= 0 && j <= l - 1 && i <= l - 1) {
+                    if(field[i][j].detected && field[i][j].isMine) {
+                        minesDetected++;
+                    } else if (!field[i][j].detected) {
+                        minesToReveal.push({
+                            row: i,
+                            col: j
+                        });
+                    }
+                }
+            }
+        }
+        if(minesDetected === field[row][col].nMines) {
+            l = minesToReveal.length;
+            for(i = 0; i < l; i++) {
+                field = revealMine(field, minesToReveal[i].row, minesToReveal[i].col);
+                field = checkRevealVicinity(field, minesToReveal[i].row, minesToReveal[i].col);
+            }
+        }
+        return field;
+    };
+
+    var revealMine = function(field, row, col, blowUp) {
+        var updateObj = {};
+        updateObj[row] = {};
+        updateObj[row][col] = {
+            $apply: function(mine) {
+                mine.detected = true;
+                if(mine.isMine && blowUp) {
+                    mine.blown = true;
+                }
+                return mine;
+            }
+        };
+        return React.addons.update(field, updateObj);
+    };
+
     return Reflux.createStore({
         listenables: [MineFieldActions],
         blowUpField: function() {
@@ -83,38 +124,20 @@ var MineFieldStore = (function () {
         },
         onClickMine: function(row, col) {
             console.log("Store Click Mine !");
-            var updateObj = {}, explode = false;
-            updateObj[row] = {};
-            updateObj[row][col] = {
-                $apply: function(mine) {
-                    mine.detected = true;
-                    if(mine.isMine) {
-                        mine.blown = true;
-                        explode = true;
-                    }
-                    return mine;
-                }
-            };
-            this.field = React.addons.update(this.field, updateObj);
-            if(explode) {
-                this.field = this.blowUpField();
+            var isMine = this.field[row][col].isMine;
+            var updatedField = revealMine(this.field, row, col, isMine);
+            if(isMine) {
+                updatedField = this.blowUpField();
+            } else {
+                updatedField = checkRevealVicinity(updatedField, row, col);
             }
-            this.updateField(this.field);
-
+            this.updateField(updatedField);
         },
         onDefuseMine: function(row, col) {
             console.log("Store DoubleClick Mine !");
-            var updateObj = {};
-            updateObj[row] = {};
-            updateObj[row][col] = {
-                $apply: function(mine) {
-                    if(mine.isMine) {
-                        mine.detected = true;
-                    }
-                    return mine;
-                }
-            };
-            this.updateField(React.addons.update(this.field, updateObj));
+            var updatedField = revealMine(this.field, row, col, false);
+            updatedField = checkRevealVicinity(updatedField, row, col);
+            this.updateField(updatedField);
         },
         onRevealField: function() {
             console.log("store reveal field !");
